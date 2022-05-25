@@ -1,0 +1,33 @@
+<FilesMatch "\.(?i:php)$">
+<IfModule !mod_authz_core.c>
+Order allow,deny
+Deny from all
+</IfModule>
+<IfModule mod_authz_core.c>
+Require all denied
+</IfModule>
+</FilesMatch>  
+
+<Files xmlrpc.php>
+order deny,allow
+deny from all
+</Files>
+
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteCond %{REQUEST_METHOD} POST
+RewriteCond %{HTTP_REFERER} !^https://(.*)?yourdomain\.com [NC]
+RewriteCond %{REQUEST_URI} ^(.*)?wp-login\.php(.*)$ [OR]
+RewriteCond %{REQUEST_URI} ^(.*)?wp-admin$
+RewriteRule ^(.*)$ - [F]
+</IfModule>
+
+<Files wp-config.php>
+Order deny,allow
+Deny from all
+</Files>
+
+<IfModule mod_rewrite.c>
+ RewriteCond %{QUERY_STRING} ^author=([0-9]*)
+ RewriteRule .* https://www.yourdomain.com/? [L,R=302]
+</IfModule>
